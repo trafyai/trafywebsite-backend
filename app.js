@@ -18,6 +18,7 @@ app.use(cors({
 app.use(express.json()); // To parse JSON bodies
 app.use('/api', paymentRoute);
 
+
 http.listen(5000, function(){
     console.log('Server is running on port 5000');
 });
