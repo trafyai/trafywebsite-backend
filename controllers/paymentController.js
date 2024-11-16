@@ -13,8 +13,8 @@ const transporter = nodemailer.createTransport({
     port: 465, // Common port for SMTP with STARTTLS
     secure: true, // Set to true for port 465 (SSL), or false for port 587 (STARTTLS)
     auth: {
-        user: 'info@trafyai.com', // Your custom email address
-        pass: 'ifcy tffc tbai kgtx' // Your email password
+        user: 'accounts@trafy.a', // Your custom email address
+        pass: 'pued ovdn nxxu ngqf' // Your email password
     }
 });
 console.log('Razorpay Key:', process.env.RAZORPAY_ID_KEY);
@@ -22,30 +22,36 @@ console.log('Razorpay Key:', process.env.RAZORPAY_ID_KEY);
 
 const createOrder = async (req, res) => {
     try {
-        const { amount, name, description, type } = req.body;
+        const { amount, name, description } = req.body;
+
+        console.log("Received amount (in paise):", amount); // Should be in paise
+
+
+
 
         // Define the receipt prefix based on the type of payment (MasterClass or Course)
-        const receiptPrefix = type === "masterclass" ? "MC" : "COURSE";
+        // const receiptPrefix = type === "masterclass" ? "MC" : "COURSE";
 
         // Prepare Razorpay order options
         const options = {
-            amount: amount * 100, // Razorpay requires the amount in paise (1 INR = 100 paise)
+            amount: amount, // Razorpay requires the amount in paise (1 INR = 100 paise)
             currency: 'INR',
-            receipt: `${receiptPrefix}_${Math.floor(Math.random() * 100000)}`, // Unique receipt ID
+            receipt: `${Math.floor(Math.random())}`, // Unique receipt ID
             payment_capture: 1 // Auto-capture payments after successful payment
         };
-
+        
+        
         // Create the Razorpay order
         razorpayInstance.orders.create(options, (err, order) => {
             if (!err) {
                 res.status(200).json({
                     success: true,
                     order_id: order.id,
-                    amount: amount * 100, // Amount in paise
+                    amount: amount, // Amount in paise
                     key_id: RAZORPAY_ID_KEY,
                     product_name: name,
                     description: description,
-                    type: type // Send the type back to the frontend for confirmation
+                  // Send the type back to the frontend for confirmation
                 });
             } else {
                 res.status(400).json({ success: false, msg: 'Something went wrong!' });
